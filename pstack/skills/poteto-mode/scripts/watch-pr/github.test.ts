@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import {
   ChecksUnavailable,
   WatcherQueryError,
@@ -472,18 +472,50 @@ describe("context and stack discovery", () => {
   it("requests and parses fork identity from gh before stack discovery", () => {
     const directory = mkdtempSync(join(tmpdir(), "watch-pr-fork-"));
     try {
-      writeFileSync(join(directory, "gh"), `#!/bin/sh
+      // Windows: a bare spawn("gh") resolves only gh.exe (libuv) or goes via
+      // cmd.exe + PATHEXT (bun), so sh/.cmd fakes are shell-dependent and can
+      // fall through to the real gh. Compile a real gh.exe fake instead.
+      // Requires bun: process.execPath must support "build --compile".
+      if (process.platform === "win32") {
+        const fakeSource = join(directory, "fake-gh.ts");
+        writeFileSync(
+          fakeSource,
+          `const joined = process.argv.join(" ");
+if (!joined.includes("number,headRefName,baseRefName,isCrossRepository")) process.exit(2);
+process.stdout.write(JSON.stringify([{ number: 42, headRefName: "feature", baseRefName: "main", isCrossRepository: true }]) + "\\n");
+`
+        );
+        const built = spawnSync(
+          process.execPath,
+          ["build", fakeSource, "--compile", "--outfile", join(directory, "gh.exe")],
+          { encoding: "utf8", timeout: 60000 }
+        );
+        expect(built.status).toBe(0);
+      } else {
+        writeFileSync(join(directory, "gh"), `#!/bin/sh
 case "$*" in
   *number,headRefName,baseRefName,isCrossRepository*) ;;
   *) exit 2 ;;
 esac
 printf '%s\\n' '[{"number":42,"headRefName":"feature","baseRefName":"main","isCrossRepository":true}]'
 `, { mode: 0o755 });
+      }
       const program = `import { GhGitHubReader } from ${JSON.stringify(import.meta.dir + "/github.ts")};
         console.log(JSON.stringify(await new GhGitHubReader().openPullRequests({ owner: "owner", repo: "repo" })));`;
+      // Exactly one PATH key: Windows env can carry both PATH and Path, and
+      // overriding only one lets cmd.exe re-resolve against the other.
+      const originalPath =
+        Object.entries(process.env).find(
+          ([key]) => key.toUpperCase() === "PATH"
+        )?.[1] ?? "";
+      const childEnv = { ...process.env };
+      for (const key of Object.keys(childEnv)) {
+        if (key.toUpperCase() === "PATH") delete childEnv[key];
+      }
+      childEnv.PATH = directory + delimiter + originalPath;
       const child = spawnSync(process.execPath, ["-e", program], {
         encoding: "utf8", timeout: 2000,
-        env: { ...process.env, PATH: directory + ":" + process.env.PATH },
+        env: childEnv,
       });
       expect(child.error).toBeUndefined();
       expect(child.status).toBe(0);
@@ -493,6 +525,6 @@ printf '%s\\n' '[{"number":42,"headRefName":"feature","baseRefName":"main","isCr
     } finally {
       rmSync(directory, { recursive: true, force: true });
     }
-  });
+  }, 30000);
 
 });
