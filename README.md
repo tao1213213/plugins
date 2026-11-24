@@ -151,6 +151,16 @@ Official Cursor plugins for popular developer tools, frameworks, and SaaS produc
 | `fiscal-ai` | [Fiscal.ai](third_party/fiscal-ai/) | Cursor | Integrations | Pull source-linked financials, filings, ratios, prices, segments, KPIs, ownership, fund letters, and news from Fiscal.ai. |
 | `lmty` | [LMTY](third_party/lmty/) | Cursor | Integrations | Read tracked competitors, competitive intelligence reports, change logs, evidence, social mentions, and market feeds for your products, and browse LMTY's public Markets, event timelines, and company, product, and person profiles. |
 | `sabre-developer-hub` | [Sabre Developer Hub](third_party/sabre-developer-hub/) | Cursor | Integrations | Search and read Sabre Developer Hub documentation, OpenAPI specs, and Sabre-published agent skills for travel APIs, SDKs, and product collections. |
+| `beehiiv` | [beehiiv](third_party/beehiiv/) | Cursor | Integrations | Run your beehiiv newsletter from chat: draft and edit posts, organize subscribers with tags, custom fields, and segments, build automations, and review publication, post, and website performance. |
+| `buffer` | [Buffer](third_party/buffer/) | Cursor | Integrations | Manage social media with Buffer: draft, schedule, and publish posts across connected channels, manage the queue and ideas, and review post performance. |
+| `greenhouse` | [Greenhouse](third_party/greenhouse/) | Cursor | Integrations | Search candidates, jobs, and applications, and review scorecards in Greenhouse Recruiting. |
+| `onedrive` | [OneDrive](third_party/onedrive/) | Cursor | Productivity | Browse, search, and read Microsoft OneDrive files. |
+| `outlook` | [Outlook](third_party/outlook/) | Cursor | Productivity | Search, read, and send Microsoft Outlook email, and look up contacts. |
+| `outlook-calendar` | [Outlook Calendar](third_party/outlook-calendar/) | Cursor | Productivity | List, create, update, and cancel Microsoft Outlook calendar events. |
+| `plaud` | [Plaud](third_party/plaud/) | Cursor | Integrations | Work with your Plaud recordings: list and search meetings and voice notes, read full transcripts with speaker labels, and pull AI summaries, action items, and key topics into your workflow. |
+| `posthog-mcp` | [PostHog MCP](third_party/posthog-mcp/) | Cursor | Integrations | Work with PostHog from chat: query product analytics and run SQL, manage feature flags and experiments, triage error tracking issues, and review session replays, surveys, and dashboards (URL-only connector to PostHog's hosted MCP server). |
+| `tinyfish` | [TinyFish](third_party/tinyfish/) | Cursor | Integrations | Browse and automate the web with TinyFish: run multi-step web automations, search the web, extract clean page content, and drive remote stealth browser sessions. |
+| `trello` | [Trello](third_party/trello/) | Cursor | Integrations | Manage your Trello workspace from chat: browse and create boards, view and move lists, create, update, move, archive, and complete cards with labels and due dates, manage checklists, capture Inbox cards, schedule Planner focus time, and search across boards. |
 Author values match each plugin’s `plugin.json` `author.name` (Cursor lists `plugins@cursor.com` in the manifest).
 
 ## Repository structure
