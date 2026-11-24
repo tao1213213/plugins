@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "budgets": [
+    { "name": "tracked_files", "max": 10000 },
+    { "name": "code_files", "max": 1000 },
+    { "name": "script_test_files", "min": 10 },
+    { "name": "repository_bytes", "max": 52428800 }
+  ]
+}

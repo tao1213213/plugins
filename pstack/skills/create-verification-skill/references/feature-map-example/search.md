@@ -2,9 +2,12 @@
 
 Search lets a user find notes by title or body text, inspect a matching note, and distinguish no matches from an unavailable search.
 
+> 可机读契约见 [search.contract.json](./search.contract.json)。每个关键 claim 都必须在临时副本中执行 negative control，证明验证器会在对应断言处失败。
+
 ## Sub-features
 
 - `search-open` opens search from each supported browser entry point.
+- `search-keyboard` opens search with slash outside an editable field without inserting a slash.
 - `search-match` returns title and body matches without changing note data.
 - `search-open-result` opens a result in the note editor.
 - `search-empty` shows a complete empty state for a query with no matches.

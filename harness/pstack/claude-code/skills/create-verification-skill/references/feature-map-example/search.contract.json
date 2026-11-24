@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "id": "search",
+  "surface": "human-web",
+  "map_file": "search.md",
+  "claims": [
+    {
+      "id": "search-match",
+      "observable": "The matching note appears and the non-matching note is absent",
+      "entrypoints": ["toolbar", "cli"],
+      "happy_path": [
+        "Open search from the toolbar",
+        "Type quarterly",
+        "Read the result list"
+      ],
+      "negative_controls": [
+        {
+          "id": "ignore-query",
+          "break": "Return every note regardless of the query",
+          "must_fail": "search-match"
+        }
+      ],
+      "artifacts": ["aria", "screenshot", "stdout", "exit_code"]
+    },
+    {
+      "id": "search-empty",
+      "observable": "An explicit empty state appears when no note matches",
+      "entrypoints": ["toolbar", "cli"],
+      "happy_path": [
+        "Open search",
+        "Type volcano",
+        "Read the empty status"
+      ],
+      "negative_controls": [
+        {
+          "id": "hide-empty-state",
+          "break": "Render no status when the result list is empty",
+          "must_fail": "search-empty"
+        }
+      ],
+      "artifacts": ["aria", "stdout", "exit_code"]
+    },
+    {
+      "id": "search-keyboard",
+      "observable": "Pressing slash outside an editable field opens search without inserting a slash",
+      "entrypoints": ["keyboard"],
+      "happy_path": [
+        "Focus the page outside an editable field",
+        "Press slash",
+        "Read the search dialog state"
+      ],
+      "negative_controls": [
+        {
+          "id": "insert-slash",
+          "break": "Insert a slash into the page instead of opening search",
+          "must_fail": "search-keyboard"
+        }
+      ],
+      "artifacts": ["aria", "screenshot"]
+    },
+    {
+      "id": "search-cli",
+      "observable": "CLI JSON returns the same matching note and exits zero",
+      "entrypoints": ["cli"],
+      "happy_path": [
+        "Run notes search quarterly --format json",
+        "Parse stdout",
+        "Read the exit code"
+      ],
+      "negative_controls": [
+        {
+          "id": "empty-json",
+          "break": "Return an empty JSON array for a matching query",
+          "must_fail": "search-cli"
+        }
+      ],
+      "artifacts": ["stdout", "stderr", "exit_code"]
+    }
+  ],
+  "cleanup": [
+    "Close the browser or terminal session started by the run",
+    "Remove the disposable data directory",
+    "Keep proof artifacts outside the disposable data directory"
+  ]
+}

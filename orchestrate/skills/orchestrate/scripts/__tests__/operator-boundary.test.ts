@@ -45,7 +45,7 @@ describe("operator boundary", () => {
     );
   });
 
-  test("requires a current-user 0600 operator flag", () => {
+  test.skipIf(process.platform === "win32")("requires a current-user 0600 operator flag", () => {
     const home = useTempHome();
     mkdirSync(join(home, ".orchestrate"), { recursive: true });
     const flagPath = operatorModeFlagPath(home);
@@ -60,7 +60,7 @@ describe("operator boundary", () => {
     ).not.toThrow();
   });
 
-  test("does not trust HOME overrides or symlinked flags", () => {
+  test.skipIf(process.platform === "win32")("does not trust HOME overrides or symlinked flags", () => {
     const home = useTempHome();
     mkdirSync(join(home, ".orchestrate"), { recursive: true });
     const realFlag = join(home, "real-operator-mode");

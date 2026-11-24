@@ -1,0 +1,38 @@
+name: Agent Evidence Gates
+
+on:
+  pull_request:
+    paths:
+      - "schemas/surface-inventory.schema.json"
+      - "schemas/evidence-manifest.schema.json"
+      - "scripts/check-verification-evidence.mjs"
+      - "scripts/validate-evidence.mjs"
+      - "scripts/lib/isolated-workspace.mjs"
+      - "examples/search-verification/**"
+      - ".github/workflows/agent-evidence-gates.yml"
+
+jobs:
+  evidence:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-save ajv ajv-formats
+
+      - name: Run search verification fixture
+        run: node examples/search-verification/run.mjs --output "$RUNNER_TEMP/search-evidence"
+
+      - name: Check evidence coverage and cleanup
+        run: node scripts/check-verification-evidence.mjs --root "$RUNNER_TEMP/search-evidence" --manifest "$RUNNER_TEMP/search-evidence/evidence.json" --inventory examples/search-verification/surface-inventory.json

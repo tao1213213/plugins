@@ -1,0 +1,29 @@
+name: Agent Governance
+
+on:
+  pull_request:
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-save ajv ajv-formats
+
+      - name: Collect repository metrics
+        run: node scripts/collect-repo-metrics.mjs --output "$RUNNER_TEMP/repo-metrics.json"
+
+      - name: Check performance budget
+        run: node scripts/check-performance-budget.mjs --metrics "$RUNNER_TEMP/repo-metrics.json"
+
+      - name: Check exceptions
+        run: node scripts/check-exceptions.mjs
+
+      - name: Run rollback drill
+        run: node scripts/rollback-drill.mjs --root "$RUNNER_TEMP"

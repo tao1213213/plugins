@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cursor.com/schemas/surface-inventory.schema.json",
+  "title": "Surface inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "summary", "surfaces"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_surfaces", "by_client_class"],
+      "properties": {
+        "total_surfaces": { "type": "integer", "minimum": 0 },
+        "by_client_class": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["device-agent", "human-cli", "human-web", "mcp", "sdk", "webhook"],
+          "properties": {
+            "device-agent": { "$ref": "#/$defs/count" },
+            "human-cli": { "$ref": "#/$defs/count" },
+            "human-web": { "$ref": "#/$defs/count" },
+            "mcp": { "$ref": "#/$defs/count" },
+            "sdk": { "$ref": "#/$defs/count" },
+            "webhook": { "$ref": "#/$defs/count" }
+          }
+        }
+      }
+    },
+    "surfaces": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/surface" }
+    }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "claimIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "waiver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["owner", "reason", "expires_at"],
+      "properties": {
+        "owner": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string", "minLength": 1 },
+        "expires_at": { "type": "string", "format": "date" }
+      }
+    },
+    "entrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value", "source"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reason"],
+      "properties": {
+        "status": { "enum": ["uncovered", "partial", "verified", "unreachable"] },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "client_class", "entrypoints", "owner", "coverage"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "client_class": {
+          "enum": ["device-agent", "human-cli", "human-web", "mcp", "sdk", "webhook"]
+        },
+        "entrypoints": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/entrypoint" }
+        },
+        "owner": { "type": "string", "minLength": 1 },
+        "coverage": { "$ref": "#/$defs/coverage" },
+        "claim_ids": { "$ref": "#/$defs/claimIds" },
+        "waiver": { "$ref": "#/$defs/waiver" }
+      }
+    }
+  }
+}

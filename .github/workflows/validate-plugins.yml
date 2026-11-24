@@ -7,14 +7,26 @@ on:
       - ".claude-plugin/marketplace.json"
       - "**/plugin.json"
       - "schemas/**"
+      - "examples/**"
       - "pstack/**"
       - "harness/**"
       - "scripts/**"
+      - "cursor-team-kit/**"
+      - "orchestrate/**"
+      - "create-plugin/**"
+      - "docs/**"
       - ".github/workflows/validate-plugins.yml"
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -30,6 +42,21 @@ jobs:
 
       - name: Check generated pstack harness trees
         run: node scripts/generate-pstack-harness-trees.mjs --check
+
+      - name: Check pstack docs
+        run: node scripts/check-pstack-docs.mjs
+
+      - name: Check feature-map contracts
+        run: node scripts/check-feature-maps.mjs
+
+      - name: Run search verification fixture
+        run: node examples/search-verification/run.mjs --output "$RUNNER_TEMP/search-evidence"
+
+      - name: Validate search evidence
+        run: node scripts/validate-evidence.mjs --root "$RUNNER_TEMP/search-evidence" --manifest "$RUNNER_TEMP/search-evidence/evidence.json"
+
+      - name: Test repository scripts
+        run: node --test scripts/test/*.test.mjs
 
       - name: Test pstack skill scripts
         run: node --disable-warning=ExperimentalWarning --test pstack/skills/*/scripts/test/*.test.ts

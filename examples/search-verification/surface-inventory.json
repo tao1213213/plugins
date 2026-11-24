@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "summary": {
+    "total_surfaces": 2,
+    "by_client_class": {
+      "device-agent": 0,
+      "human-cli": 1,
+      "human-web": 1,
+      "mcp": 0,
+      "sdk": 0,
+      "webhook": 0
+    }
+  },
+  "surfaces": [
+    {
+      "id": "human-web:app/search/page.tsx",
+      "client_class": "human-web",
+      "entrypoints": [
+        { "kind": "route", "value": "/search", "source": "app/search/page.tsx" }
+      ],
+      "owner": "search",
+      "coverage": { "status": "verified", "reason": "Browser claims have evidence" },
+      "claim_ids": ["search-match", "search-empty", "search-keyboard"]
+    },
+    {
+      "id": "human-cli:package.json",
+      "client_class": "human-cli",
+      "entrypoints": [
+        { "kind": "command", "value": "notes -> cli.js", "source": "package.json" }
+      ],
+      "owner": "search",
+      "coverage": { "status": "verified", "reason": "CLI claim has evidence" },
+      "claim_ids": ["search-cli"]
+    }
+  ]
+}

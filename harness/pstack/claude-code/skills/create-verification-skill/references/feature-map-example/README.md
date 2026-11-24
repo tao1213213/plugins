@@ -41,6 +41,8 @@ Each feature file starts with an H1 title and one paragraph describing the user-
 
 Keep implementation details out of the map. Name only user paths, stable handles, required state, commands, and observable proof.
 
+A map can include a `<name>.contract.json` sidecar. The contract lists 3—5 critical claims, their observable results, happy paths, negative controls, expected artifacts, and cleanup steps. Run `node scripts/check-feature-maps.mjs` from the repository root to validate the sidecars against their Markdown maps.
+
 ## Features
 
 - [Create a note](./create-note.md) covers browser and CLI creation, cancellation, persistence, and cleanup.

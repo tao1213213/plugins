@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
-const SCRIPTS_DIR = new URL("..", import.meta.url).pathname;
+const SCRIPTS_DIR = fileURLToPath(new URL("..", import.meta.url));
 
 import {
   findActiveRootPlanner,

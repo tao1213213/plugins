@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cursor.com/schemas/evidence-manifest.schema.json",
+  "title": "Verification evidence manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "run_id", "commit", "environment", "claims", "coverage"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "commit": { "type": "string", "minLength": 1 },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "node", "runtime"],
+      "properties": {
+        "os": { "type": "string", "minLength": 1 },
+        "node": { "type": "string", "minLength": 1 },
+        "runtime": { "type": "string", "minLength": 1 }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "verified", "failed", "skipped", "unreachable", "uncovered"],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "verified": { "$ref": "#/$defs/count" },
+        "failed": { "$ref": "#/$defs/count" },
+        "skipped": { "$ref": "#/$defs/count" },
+        "unreachable": { "$ref": "#/$defs/count" },
+        "uncovered": { "$ref": "#/$defs/count" }
+      }
+    }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "kind"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "kind": { "type": "string", "minLength": 1 }
+      }
+    },
+    "negativeControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "caught", "failing_claim"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "caught": { "const": true },
+        "failing_claim": { "$ref": "#/$defs/id" }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_processes_remaining", "evidence_preserved"],
+      "properties": {
+        "started_processes_remaining": { "const": 0 },
+        "evidence_preserved": { "const": true }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "entrypoint", "command", "exit_code", "status", "artifacts", "negative_control", "cleanup"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/id" },
+        "entrypoint": { "type": "string", "minLength": 1 },
+        "command": { "type": "string", "minLength": 1 },
+        "exit_code": { "type": "integer" },
+        "status": { "enum": ["passed", "failed", "skipped", "unreachable"] },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/artifact" }
+        },
+        "negative_control": { "$ref": "#/$defs/negativeControl" },
+        "cleanup": { "$ref": "#/$defs/cleanup" }
+      }
+    }
+  }
+}

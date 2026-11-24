@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "boundaries": [
+    {
+      "name": "source-not-generated",
+      "from": "pstack/**",
+      "forbid": ["harness/**"],
+      "reason": "Source code must not depend on generated harness copies."
+    },
+    {
+      "name": "repo-tools-not-skill-runtime",
+      "from": "scripts/**",
+      "forbid": ["pstack/skills/**/scripts/**"],
+      "reason": "Repository tooling stays independent from skill runtime implementation."
+    },
+    {
+      "name": "orchestrate-not-pstack",
+      "from": "orchestrate/**",
+      "forbid": ["pstack/**"],
+      "reason": "The orchestration package owns its runtime and must not import pstack internals."
+    },
+    {
+      "name": "runner-not-watch-pr",
+      "from": "pstack/skills/poteto-mode/scripts/eval-runner/**",
+      "forbid": ["pstack/skills/poteto-mode/scripts/watch-pr/**"],
+      "reason": "Eval infrastructure and PR watching are separate tools."
+    },
+    {
+      "name": "watch-pr-not-runner",
+      "from": "pstack/skills/poteto-mode/scripts/watch-pr/**",
+      "forbid": ["pstack/skills/poteto-mode/scripts/eval-runner/**"],
+      "reason": "PR watching must not depend on eval infrastructure."
+    },
+    {
+      "name": "renderer-not-main",
+      "from": "examples/**/electron-renderer/**",
+      "forbid": ["examples/**/electron-main/**"],
+      "reason": "Renderer code must not import main-process modules."
+    }
+  ],
+  "ownership": [
+    { "path": "continual-learning/**", "owner": "continual-learning" },
+    { "path": "cursor-team-kit/**", "owner": "cursor-team-kit" },
+    { "path": "examples/**", "owner": "examples" },
+    { "path": "harness/**", "owner": "generated-harness" },
+    { "path": "orchestrate/**", "owner": "orchestrate" },
+    { "path": "pstack/**", "owner": "pstack" },
+    { "path": "scripts/**", "owner": "repo-tooling" }
+  ]
+}

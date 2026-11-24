@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "allowed": ["**"],
+  "forbidden": [
+    ".env",
+    "**/.env",
+    "**/.env.*",
+    "**/secrets/**",
+    "**/credentials.json",
+    "**/token-box.txt",
+    "**/id_rsa",
+    "**/*.pem",
+    "**/*.key"
+  ]
+}

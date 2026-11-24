@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cursor.com/schemas/eval-scorecard.schema.json",
+  "title": "Eval scorecard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "promotion_ready", "blockers", "baseline_total", "candidate_total", "baseline_cost", "candidate_cost", "cost_ratio", "baseline_pass_rate", "candidate_pass_rate"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "promotion_ready": { "type": "boolean" },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "baseline_total": { "type": "number", "minimum": 0 },
+    "candidate_total": { "type": "number", "minimum": 0 },
+    "baseline_cost": { "type": "number", "minimum": 0 },
+    "candidate_cost": { "type": "number", "minimum": 0 },
+    "cost_ratio": { "type": "number", "minimum": 0 },
+    "baseline_pass_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+    "candidate_pass_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

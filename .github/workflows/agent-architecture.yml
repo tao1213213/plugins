@@ -1,0 +1,20 @@
+name: Agent Architecture
+
+on:
+  pull_request:
+
+jobs:
+  architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-save ajv
+
+      - name: Check architecture boundaries
+        run: node scripts/check-architecture.mjs

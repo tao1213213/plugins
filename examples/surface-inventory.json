@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "summary": {
+    "total_surfaces": 6,
+    "by_client_class": {
+      "device-agent": 1,
+      "human-cli": 1,
+      "human-web": 1,
+      "mcp": 1,
+      "sdk": 1,
+      "webhook": 1
+    }
+  },
+  "surfaces": [
+    {
+      "id": "device-agent:src/device/enrollment.ts",
+      "client_class": "device-agent",
+      "entrypoints": [
+        { "kind": "device", "value": "src/device/enrollment.ts", "source": "src/device/enrollment.ts" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "uncovered", "reason": "No device enrollment verification recipe linked" }
+    },
+    {
+      "id": "human-cli:package.json",
+      "client_class": "human-cli",
+      "entrypoints": [
+        { "kind": "command", "value": "notes -> cli.js", "source": "package.json" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "partial", "reason": "CLI search journey exists; negative control pending" }
+    },
+    {
+      "id": "human-web:app/search/page.tsx",
+      "client_class": "human-web",
+      "entrypoints": [
+        { "kind": "route", "value": "/search", "source": "app/search/page.tsx" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "partial", "reason": "Browser search journey exists; keyboard entry and negative control pending" }
+    },
+    {
+      "id": "mcp:src/mcp/server.ts",
+      "client_class": "mcp",
+      "entrypoints": [
+        { "kind": "protocol-mount", "value": "mcp", "source": "src/mcp/server.ts" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "uncovered", "reason": "No MCP client verification recipe linked" }
+    },
+    {
+      "id": "sdk:src/sdk/index.ts",
+      "client_class": "sdk",
+      "entrypoints": [
+        { "kind": "export", "value": "sdk", "source": "src/sdk/index.ts" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "partial", "reason": "SDK search call exists; persistence readback pending" }
+    },
+    {
+      "id": "webhook:src/webhooks/search.ts",
+      "client_class": "webhook",
+      "entrypoints": [
+        { "kind": "webhook", "value": "src/webhooks/search.ts", "source": "src/webhooks/search.ts" }
+      ],
+      "owner": "unassigned",
+      "coverage": { "status": "uncovered", "reason": "No signed webhook replay recipe linked" }
+    }
+  ]
+}

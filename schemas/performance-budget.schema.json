@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cursor.com/schemas/performance-budget.schema.json",
+  "title": "Performance budget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "budgets"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "budgets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "min": { "type": "number", "minimum": 0 },
+          "max": { "type": "number", "minimum": 0 }
+        },
+        "anyOf": [{ "required": ["min"] }, { "required": ["max"] }]
+      }
+    }
+  }
+}

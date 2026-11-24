@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { delimiter, join } from "node:path";
 import {
   ChecksUnavailable,
   WatcherQueryError,
@@ -472,18 +472,24 @@ describe("context and stack discovery", () => {
   it("requests and parses fork identity from gh before stack discovery", () => {
     const directory = mkdtempSync(join(tmpdir(), "watch-pr-fork-"));
     try {
-      writeFileSync(join(directory, "gh"), `#!/bin/sh
+      const windows = process.platform === "win32";
+      const executable = join(directory, windows ? "gh.cmd" : "gh");
+      const body = windows
+        ? `@echo off\r\necho %* | findstr /C:"number,headRefName,baseRefName,isCrossRepository" >nul\r\nif errorlevel 1 exit /b 2\r\necho [{"number":42,"headRefName":"feature","baseRefName":"main","isCrossRepository":true}]\r\n`
+        : `#!/bin/sh
 case "$*" in
   *number,headRefName,baseRefName,isCrossRepository*) ;;
   *) exit 2 ;;
 esac
 printf '%s\\n' '[{"number":42,"headRefName":"feature","baseRefName":"main","isCrossRepository":true}]'
-`, { mode: 0o755 });
+`;
+      writeFileSync(executable, body, { mode: 0o755 });
       const program = `import { GhGitHubReader } from ${JSON.stringify(import.meta.dir + "/github.ts")};
         console.log(JSON.stringify(await new GhGitHubReader().openPullRequests({ owner: "owner", repo: "repo" })));`;
+      const pathKey = Object.keys(process.env).find((key) => key.toLowerCase() === "path") ?? "PATH";
       const child = spawnSync(process.execPath, ["-e", program], {
         encoding: "utf8", timeout: 2000,
-        env: { ...process.env, PATH: directory + ":" + process.env.PATH },
+        env: { ...process.env, [pathKey]: directory + delimiter + (process.env[pathKey] ?? "") },
       });
       expect(child.error).toBeUndefined();
       expect(child.status).toBe(0);
